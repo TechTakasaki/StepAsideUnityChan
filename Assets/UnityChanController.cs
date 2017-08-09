@@ -16,7 +16,7 @@ namespace test
         //左右に移動するための力
         private float turnForce = 500.0f;
         //ジャンプするための力（追加）
-        private float upForce = 500.0f;
+        private float upForce = 800.0f;
         //左右の移動できる範囲
         private float movableRange = 3.4f;
         //動きを減速させる係数（追加）
@@ -35,6 +35,8 @@ namespace test
         private bool isLButtonDown = false;
         //右ボタン押下の判定（追加）
         private bool isRButtonDown = false;
+
+        private GameObject UnityChan;
 
 
         // Use this for initialization
@@ -55,6 +57,8 @@ namespace test
 
             //シーン中のscoreTextオブジェクトを取得（追加）
             this.scoreText = GameObject.Find("ScoreText");
+
+            UnityChan = GameObject.Find("unitychan");
         }
 
         // Update is called once per frame
@@ -99,6 +103,12 @@ namespace test
                 //Unityちゃんに上方向の力を加える（追加）
                 this.myRigidbody.AddForce(this.transform.up * this.upForce);
             }
+
+            // 画面外に出たら破棄する
+            if (transform.position.z < UnityChan.transform.position.z)
+            {
+                Destroy(gameObject);
+            }
         }
 
         //トリガーモードで他のオブジェクトと接触した場合の処理（追加）
@@ -109,12 +119,16 @@ namespace test
             if (other.gameObject.tag == "CarTag" || other.gameObject.tag == "TrafficConeTag")
             {
                 this.isEnd = true;
+                //stateTextにGAME OVERを表示（追加）
+                this.stateText.GetComponent<Text>().text = "GAME OVER";
             }
 
             //ゴール地点に到達した場合（追加）
             if (other.gameObject.tag == "GoalTag")
             {
                 this.isEnd = true;
+                //stateTextにGAME CLEARを表示（追加）
+                this.stateText.GetComponent<Text>().text = "CLEAR!!";
             }
 
             //コインに衝突した場合（追加）
